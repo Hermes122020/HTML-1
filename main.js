@@ -24,15 +24,15 @@ $(document).ready(function(){
        $(document).on('click','#btnEditar',function(){ 
                    $('#btnAdd').hide();
                    fila_borrar=parseInt($(this).attr('alt'));
-                   var studiante = JSON.parse(MisAlumnos[fila_borrar]); 
-                   $("#txtcod").val(studiante.codigo);
-                   $("#txtnombre").val(studiante.nombre);
+                   var estudiante = JSON.parse(MisAlumnos[fila_borrar]); 
+                   $("#txtcod").val(estudiante.codigo);
+                   $("#txtnombre").val(estudiante.nombre);
                    $("#txtdireccion").val(studiante.direccion);
-                   $("#txtmuni").val(studiante.municipio);
-                   $("#txtdepa").val(studiante.departamento);
-                   $("#txttel").val(studiante.telefono);
-                   $("#txtnac").val(studiante.fechnacimiento);
-                   $("#txtsex").val(studiante.sexo);
+                   $("#txtmuni").val(estudiante.municipio);
+                   $("#txtdepa").val(estudiante.departamento);
+                   $("#txttel").val(estudiante.telefono);
+                   $("#txtnac").val(estudiante.fechnacimiento);
+                   $("#txtsex").val(estudiante.sexo);
                     $('#btnSave').show();                                               
            
        });
@@ -55,6 +55,10 @@ $(document).ready(function(){
                            $('#txtnombre').focus();                        
                        MostrarAlumnos();
        });
+
+
+
+
 
 function AddStudents(){
 if ($.trim($('#txtcod').val())==''){            
