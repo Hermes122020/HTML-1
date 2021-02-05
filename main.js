@@ -23,6 +23,7 @@ $(document).ready(function(){
       
        $(document).on('click','#btnEditar',function(){ 
                    $('#btnAdd').hide();
+                   $('#btnSave').show();
                    fila_borrar=parseInt($(this).attr('alt'));
                    var estudiante = JSON.parse(MisAlumnos[fila_borrar]); 
                    $("#txtcod").val(estudiante.codigo);
