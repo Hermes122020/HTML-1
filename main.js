@@ -89,7 +89,7 @@ var appVue = new Vue({
             this.alumnos.fechaNacimiento='';
             this.alumnos.sexo='';
         },
-        eliminarProducto(alum){
+        eliminarAlumno(alum){
             if( confirm(`¿Esta seguro que desea eliminar el Alumno? :  ${alum.nombre}`) ){
                 localStorage.removeItem(alum.idAlumno)
                 this.obtenerAlumnos();
