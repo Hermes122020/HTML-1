@@ -1,141 +1,107 @@
-$(document).ready(function(){
-    $('#btnSave').hide();
-     $('#txtnombre').focus();   
-   var fila_borrar=-1;
-   var MisAlumnos = localStorage.getItem("MisAlumnos");
-   MisAlumnos = JSON.parse(MisAlumnos);
-   if(MisAlumnos == null){ 
-       MisAlumnos = [];
-   }else{
-       MostrarAlumnos();
-   }
-   $('#btnAdd').click(function(){
-           AddStudents();
-   });
-   
-       $(document).on('click','#btnBorrar',function(){                         
-                       fila_borrar = parseInt($(this).attr("alt")); 
-                       MisAlumnos.splice(fila_borrar, 1); 
-                       localStorage.setItem("MisAlumnos", JSON.stringify(MisAlumnos));
-                       alert("Registro de Alumno Eliminado");                                  
-                       MostrarAlumnos();               
-       });
-      
-       $(document).on('click','#btnEditar',function(){ 
-                   $('#btnAdd').hide();
-                   $('#btnSave').show();
-                   fila_borrar=parseInt($(this).attr('alt'));
-                   var estudiante = JSON.parse(MisAlumnos[fila_borrar]); 
-                   $("#txtcod").val(estudiante.codigo);
-                   $("#txtnombre").val(estudiante.nombre);
-                   $("#txtdireccion").val(studiante.direccion);
-                   $("#txtmuni").val(estudiante.municipio);
-                   $("#txtdepa").val(estudiante.departamento);
-                   $("#txttel").val(estudiante.telefono);
-                   $("#txtnac").val(estudiante.fechnacimiento);
-                   $("#txtsex").val(estudiante.sexo);
-                    $('#btnSave').show();                                               
-           
-       });
-       $('#btnSave').click(function(){
-           $('#btnAdd').show();
-                           MisAlumnos [fila_borrar]= JSON.stringify({ 
-                           codigo : $("#txtcod").val(),
-                           nombre : $("#txtnombre").val(),
-                           direccion : $("#txtdireccion").val(),
-                           municipio : $("#txtmuni").val(),
-                           departamento : $("#txtdepa").val(),
-                           telefono : $("#txttel").val(),
-                           fechnacimiento : $("#txtnac").val(),
-                           sexo : $("#txtsex").val(),
-                       });
-                       localStorage.setItem("MisAlumnos", JSON.stringify(MisAlumnos));
-                       alert("Registro de Alumno Actualizado");
-                        $('#btnSave').hide(); 
-                        $('input').val(''); 
-                           $('#txtnombre').focus();                        
-                       MostrarAlumnos();
-       });
+const indexDb = indexedDB.open('db_alumnos',1);
 
+var generarIdUnicoDesdeFecha=()=>{
+    let fecha = new Date();//03/02/2021
+    return Math.floor(fecha.getTime()/1000).toString(16);
+};
+var appVue = new Vue({
+    el:'#appAlumnos',
+    data:{
+        accion : 'nuevo',
+        msg    : '',
+        status : false,
+        error  : false,
+        buscar : "",
+        alumno:{
+            idAlumno  : 0,
+            codigo      : '',
+            nombre : '',
+            dirección      : '',
+            municipio      : '',
+            departamento         : '',
+            telefono      : '',
+            fechaNacimiento      : '',
+            sexo        : ''
+        },
+        alumn:[]
+    },
+    methods:{
+        buscandoAlumnos(){
+            this.alumnos = this.alumnos.filter((element,index,alumnos) => element.descripcion.toUpperCase().indexOf(this.buscar.toUpperCase())>=0 || element.codigo.toUpperCase().indexOf(this.buscar.toUpperCase())>=0 );
+            if( this.buscar.length<=0){
+                this.obtenerAlumnos();
+            }
+        },
+        guardarAlumno(){
+            /**
+             * webSQL -> DB Relacional en el navegador
+             * localStorage -> BD NOSQL clave/valor
+             * indexDB -> BD NOSQL clave/valor
+             */
+            if( this.accion=='nuevo' ){
+                this.alumno.idAlumno = generarIdUnicoDesdeFecha();   
+            }
+            let db = indexDb.result,
+                transaccion = db.transaction("tblalumnos","readwrite"),
+                alumnos = transaccion.objectStore("tblalumnos"),
+                query = alumnos.put(JSON.stringify(this.alumnos));
 
+            query.onsuccess=event=>{
+                this.obtenerAlumnos();
+                this.limpiar();
+                this.status = true;
+                this.msg = 'Alumno Guardado con exito.';
+                this.error = false;
 
-
-
-function AddStudents(){
-if ($.trim($('#txtcod').val())==''){            
-               alert('Ingresa el codigo');
-               $('#txtcod').focus();
-               return false;
-   }
-
-   if ($.trim($('#txtnombre').val())==''){         
-       alert('Ingresa el nombre');
-       $('#txtnombre').focus();
-       return false;
-   }
-
-   if ($.trim($('#txtdireccion').val())==''){          
-   alert('Ingresa la direccion');
-   $('#txtdireccion').focus();
-   return false;
-   }
-
-   if ($.trim($('#txtmuni').val())==''){           
-   alert('Ingresa el municipio');
-   $('#txtmuni').focus();
-   return false;
-   }
-
-   if ($.trim($('#txtdepa').val())==''){           
-   alert('Ingresa el departamento');
-   $('#txtedad').focus();
-   return false;
-   }
-
-   if ($.trim($('#txttel').val())==''){            
-   alert('Ingresa el teléfono');
-   $('#txttel').focus();
-   return false;
-   }
-
-   if ($.trim($('#txtnac').val())==''){            
-   alert('Ingresa la fecha de nacimiento');
-   $('#txtnac').focus();
-   return false;
-   }
-
-   if ($.trim($('#txtsex').val())==''){            
-   alert('Ingresa el sexo');
-   $('#txtsex').focus();
-   return false;
-   }
-   
-var students = JSON.stringify({       
-   codigo : $("#txtcod").val(),
-   nombre : $("#txtnombre").val(),
-   direccion : $("#txtdireccion").val(),
-   municipio : $("#txtmuni").val(),
-   departamento : $("#txtdepa").val(),
-   telefono : $("#txttel").val(),
-   fechnacimiento : $("#txtnac").val(),
-   sexo : $("#txtsex").val(),
-});
-
-MisAlumnos.push(students);
-localStorage.setItem("MisAlumnos", JSON.stringify(MisAlumnos));
-alert("Alumno Registrado con Exito");
-$('input').val('');
-$('#txtnombre').focus();
-MostrarAlumnos();
-}
-
-function MostrarAlumnos()   {
-$('#tblStudents tr:not(:first)').remove();
-       for(var i in MisAlumnos)
-       {
-           var con = JSON.parse(MisAlumnos[i]);
-       $('#tblStudents tr:last').after('<tr><td>'+con.codigo+'</td><td>'+con.nombre+'</td><td>'+con.direccion+'</td><td>'+con.municipio+'</td><td>'+con.departamento+'</td><td>'+con.telefono+'</td><td>'+con.fechnacimiento+'</td><td>'+con.sexo+'</td><td>'+'<button id="btnBorrar" alt="'+i+'" class="btn btn-danger btn-sm">Borrar</button>   <button id="btnEditar" alt="'+ i +'" class="btn btn-info btn-sm">Seleccionar</button>'+'</td></tr>');
-       }
-}
-
+                setTimeout(()=>{
+                    this.status=false;
+                    this.msg = '';
+                }, 3000);
+            };
+            query.onerror=event=>{
+                this.status = true;
+                this.msg = 'Error al ingresar datos';
+                this.error = true;
+                console.log( event );
+            };
+        },
+        
+        obtenerAlumnos(){
+            /*this.alumnos = [];
+            for (let index = 0; index < localStorage.length; index++) {
+                let key = localStorage.key(index);
+                this.alumnos.push( JSON.parse(localStorage.getItem(key)) );
+            }*/
+        },
+        mostrarAlumno(alum){
+            this.alumno= alum;
+            this.accion='modificar';
+        },
+        limpiar(){
+            this.accion='nuevo';
+            this.alumnos.idAlumno='';
+            this.alumnos.codigo='';
+            this.alumnos.nombre='';
+            this.alumnos.dirección='';
+            this.alumnos.municipio='';
+            this.alumnos.departamento='';
+            this.alumnos.telefono='';
+            this.alumnos.fechaNacimiento='';
+            this.alumnos.sexo='';
+        },
+        eliminarProducto(alum){
+            if( confirm(`¿Esta seguro que desea eliminar el Alumno? :  ${alum.nombre}`) ){
+                localStorage.removeItem(alum.idAlumno)
+                this.obtenerAlumnos();
+            }
+        }
+    },
+    created(){
+        indexDb.onupgradeneeded=event=>{
+            let db=event.target.result,
+                tblalumnos = db.createObjectStore('tblalumnos',{autoIncrement:true});
+            tblalumnos.createIndex('idAlumno','idAlumno',{unique:true});
+        };
+        this.obtenerAlumnos();
+    }
 });

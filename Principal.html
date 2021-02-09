@@ -1,144 +1,138 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!--requerido  por Bootstrap para un óptimo renderizado     -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>REGISTRO DE ALUMNOS</title>
-    <!-- incluimos cdn Boostrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <style>
-        td,th{
-            text-align: center;
-            vertical-align: middle;
-        }
-    </style>
-
+<!-- HTML -> Lenguaje de Marcacion de Hipertexto -->
+<!DOCTYPE html><!--Definimos el tipo de documento vamos a utilizar -->
+<html lang="es"><!-- Establecemos el idioma -->
+<head><!-- Define la cabecera del documento -->
+    <meta charset="UTF-8"><!-- Definimos la codificacion del documento  -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡REGISTRO DE ALUMNOS!</title><!-- Titulo de la aplicacion en la ventana del navegador -->
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 </head>
-<body>
-    <!--INICIA BLOQUE DE INTERFAZ   -->
-    <div class="container"> 
-        <br class="row">
-            <div class="col-">
-                <div class="row p-2">
-                    <div class="col-xs-12 text-align text-center text-white bg-success">
-                        <h5>Registro de Alumnos</h5>
+<body> <!-- Cuerpo de mi documento -->
+    <div id="appAlumnos" class="container-fluid">
+        <form v-on:submit.prevent="guardarAlumno" v-on:reset="limpiar">
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="row p-2">
+                        <div class="col-sm text-center text-white bg-primary">
+                            <h5>REGISTRO DE ALUMNO</h5>
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-sm">CODIGO:</div>
+                        <div class="col-sm">
+                            <input v-model="alumnos.codigo"  required pattern="[A-ZÑña-z0-9, ]{5,65}" class="form-control form-control-sm">
+
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-sm">NOMBRE: </div>
+                        <div class="col-sm">
+                            <input v-model="alumnos.nombre" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-sm">DIRRECIÓN: </div>
+                        <div class="col-sm">
+                            <input v-model="alumnos.dirrección" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-sm">MUNICIPIO: </div>
+                        <div class="col-sm">
+                            <input v-model="alumnos.Municipio" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-sm">DEPARTAMENTO: </div>
+                        <div class="col-sm">
+                            <input v-model="alumnos.Departamento" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-sm">TELEFONO: </div>
+                        <div class="col-sm">
+                            <input v-model="alumnos.Departamento" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                        </div>
+
+                    <div class="row p-2">
+                            <div div class="col-sm">FECHA DE NACIMIENTO:</div>
+                            <div class="col-sm">
+                                <input v-model="alumnos.fechaNacimiento" required pattern="^[A-Z]{2}[0-9]{8}$" type="date" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-sm">SEXO: </div>
+                        <div class="col-sm">
+                            <input v-model="alumnos.sexo" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-sm text-center">
+                            <input type="submit" value="Guardar" class="btn btn-dark">
+                            <input type="reset" value="Limpiar" class="btn btn-warning">
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-sm text-center">
+                            <div v-if="status" class="alert" v-bind:class="[error ? 'alert-danger' : 'alert-success']">
+                                {{ msg }}
+                            </div>
+                        </div>
                     </div>
                 </div>
-            
-          <div class="panel-body">
-
-            <div class="row p-2">
-                <div class="col-sm">Código:</div>
-                <div class="col-sm">
-            <input type="text" class="form-control input-sm alfanumerico" id="txtcod"/>
-        </div>
+                <div class="col-sm"></div>
+                <div class="col-sm-6 p-2">
+                    <div class="row text-center text-white bg-primary">
+                        <div class="col"><h5>PRODUCTOS REGISTRADOS</h5></div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <table class="tble table-sm">
+                                <thead>
+                                    <tr>
+                                        <td colspan="5">
+                                            <input v-model="buscar" v-on:keyup="buscandoAlumno" type="text" class="form-control form-contro-sm" placeholder="Buscar Alumnos">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>CODIGO</th>
+                                        <th>NOMBRE</th>
+                                        <th>DIRRECIÓN</th>
+                                        <th>MUNICIPIO</th>
+                                        <th>DEPARTAMENTO</th>
+                                        <th>TELEFONO</th>
+                                        <th>FECHA</th>
+                                        <th>SEXO</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="alum in alumnos" v-on:click="mostrarAlumno(alum)">
+                                        <td>{{ alum.codigo }}</td>
+                                        <td>{{ alum.nombre }}</td>
+                                        <td>{{ alum.dirección }}</td>
+                                        <td>{{ alum.municipio }}</td>
+                                        <td>{{ alum.departamento }}</td>
+                                        <td>{{ alum.telefono }}</td>
+                                        <td>{{ alum.fechaNacimiento}}</td>
+                                        <td>{{ alum.sexo}}</td>
+                                        <td>
+                                            <button @click="eliminarAlumno(alum)" class="btn btn-danger">DEL</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 
-        <div class="row p-2">
-            <div class="col-sm">Nombre:</div>
-            <div class="col-sm">
-            <input type="text" class="form-control input-sm alfabeticos" id="txtnombre"/>
-        </div>
-    </div>
-        
-    <div class="row p-2">
-            <div class="col-sm">Dirección:</div>
-            <div class="col-sm">
-            <input type="text" class="form-control input-sm alfanumerico" id="txtdireccion"/>
-        </div>
-    </div>
-
-    <div class="row p-2">
-            <div class="col-sm">Municipio:</div>
-            <div class="col-sm">
-           <input type="text" class="form-control input-sm alfabeticos" id="txtmuni"/>
-        </div>
-    </div>
-
-    <div class="row p-2">
-             <div div class="col-sm">Departamento:</div>
-            <div class="col-sm">
-            <input type="text" class="form-control input-sm alfabeticos" id="txtdepa"/>
-        </div>
-    </div>
-        
-    <div class="row p-2">
-            <div div class="col-sm">Telefono:</div>
-            <div class="col-sm">
-            <input type="text" class="form-control input-sm enteros" id="txttel"/>
-        </div>
-    </div>  
-
-    <div class="row p-2">
-            <div div class="col-sm">Fecha de Nacimiento:</div>
-            <div class="col-sm">
-            <input type="date" class="form-control input-sm enteros" id="txtnac"/>
-        </div>
-    </div>
-
-    <div class="row p-2">
-        <div div class="col-sm">Sexo:</div>
-        <div class="col-sm">
-        <input type="text" class="form-control input-sm alfabeticos" id="txtsex"/>
-    </div>
-
-</div>
-    </div>
-        
-        <div class="col-xs-12 col-md-6 col-lg-8"><br>
-            <button type="button" id="btnAdd" class="btn btn-dark" aria-label="Left Align">
-              <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Agregar
-              <button type="button" id="btnSave" class="btn btn-dark" aria-label="Left Align">
-                <span class="glyphicon glyphicon-ok" aria-hidden="false"></span> Guardar cambios
-              </button>
-            </button>
-          
-        </div>
-    </div>
-</div>
-
-<br></br>
-    <div class="row text-align text-center text-white bg-success">
-    <div class="col-xs-12"><h5>Alumnos Registrados</h5></div>
-    </div>
-    <div class="row">
-    <div class="col">
-    <span class="text-center"></span>
-    <table ID='tblStudents' class='table table-striped table-responsive table-hover'>
-        <tr>
-        <th>Codigo</th>
-        <th>Nombre</th>    
-        <th>Direccion</th>     
-         <th>Municipio</th>
-         <th>Departamento</th>    
-         <th>Telefono</th> 
-         <th>Fecha de Nacimiento</th>  
-         <th>Sexo</th>    
-         <th colspan="2" align="center">Editar/Eliminar</th>
-         </tr>
-         </table>
-            </div> <!-- /fin div row  -->
+    <!--<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>-->
+    <script src="main.js"></script>
     
-        </div>  <!-- /fin div container  -->
-    
-    <!--FINALIZA BLOQUE DE INTERFAZ     -->
-
-<!--INCLUIMOS JQUERY Y BOOTSTRAP DESDE LOS CDN  -->
-<!--jQuery  -->
-<script   src="https://code.jquery.com/jquery-2.2.4.min.js"   
-integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
-
-    <!-- JavaScript de Boostrap -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
-integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
-crossorigin="anonymous"></script>
-
-<script src="validar.js" ></script>
-<script src="main.js" ></script>
-<script src="styles.css" ></script>
-<link href="styles.css" rel="stylesheet" type="text/css">
 </body>
 </html>
