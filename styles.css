@@ -14,7 +14,7 @@ input{
     padding: 5px;
 }
 input:valid{
-    background-color: #ffffff;
+    background-color: #645b5b;
     border: 1px solid #dbd4d4;
 }
 input:invalid{

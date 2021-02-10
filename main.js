@@ -33,11 +33,13 @@ var appVue = new Vue({
             }
         },
         guardarAlumno(){
-            /**
-             * webSQL -> DB Relacional en el navegador
-             * localStorage -> BD NOSQL clave/valor
-             * indexDB -> BD NOSQL clave/valor
-             */
+         /* indexDb.transaction(tran=>{
+              tran.executeSql('INSERT into alum tblalumnos(idAlumno,codigo,nombre,direccion,municipio,departamento,telefono,fechaNacimiento,sexo) VALUES(?,?,?,?,?,?,?,?,?)', 
+              [++id,this.alumno.codigo,this.alumno.nombre,this.alumno.direccion,this.alumno.municipio,this.alumno.departamento,this.alumno.telefono,this.alumno.fechaNacimiento,this.alumno.sexo]);
+          })*/
+            
+
+
             if( this.accion=='nuevo' ){
                 this.alumno.idAlumno = generarIdUnicoDesdeFecha();   
             }
@@ -67,16 +69,37 @@ var appVue = new Vue({
         },
         
         obtenerAlumnos(){
-            /*this.alumnos = [];
+          this.alumnos = [];
             for (let index = 0; index < localStorage.length; index++) {
                 let key = localStorage.key(index);
                 this.alumnos.push( JSON.parse(localStorage.getItem(key)) );
-            }*/
+            }
         },
+
         mostrarAlumno(alum){
-            this.alumno= alum;
-            this.accion='modificar';
+            this.accion='mostrar';
+            this.alumnos.idAlumno;
+            this.alumnos.codigo;
+            this.alumnos.nombre;
+            this.alumnos.dirección;
+            this.alumnos.municipio;
+            this.alumnos.departament;
+            this.alumnos.telefono;
+            this.alumnos.fechaNacimiento;
+            this.alumnos.sexo;
         },
+
+        /*midbalumnos.transaction(tran=>{
+            tran.executeSql('select * from tblalumnos',[],(index,data)=>{
+                this.alumnos = data.rows;
+                id=data.rows.length;
+                 });
+            }, err=>{
+                console.log(err);
+            });
+    },
+        
+    },*/
         limpiar(){
             this.accion='nuevo';
             this.alumnos.idAlumno='';
