@@ -1,4 +1,10 @@
-const indexDb = indexedDB.open('db_alumnos',1);
+var AlumnosBD = openDatabase('dbAlumnos','1.0','Registro de Alumnos',5*1024*1024);
+window.id = 0;
+if(!AlumnosBD){
+    alert("Su Navegador no soporta SQLWeb");
+}
+
+/*const indexDb = indexedDB.open('db_alumnos',1);*/
 
 var generarIdUnicoDesdeFecha=()=>{
     let fecha = new Date();//03/02/2021
@@ -33,19 +39,41 @@ var appVue = new Vue({
             }
         },
         guardarAlumno(){
-         /* indexDb.transaction(tran=>{
-              tran.executeSql('INSERT into alum tblalumnos(idAlumno,codigo,nombre,direccion,municipio,departamento,telefono,fechaNacimiento,sexo) VALUES(?,?,?,?,?,?,?,?,?)', 
+          AlumnosBD.transaction(tran=>{
+              tran.executeSql('INSERT into alum alumnos(idAlumno,codigo,nombre,direccion,municipio,departamento,telefono,fechaNacimiento,sexo) VALUES(?,?,?,?,?,?,?,?,?)', 
               [++id,this.alumno.codigo,this.alumno.nombre,this.alumno.direccion,this.alumno.municipio,this.alumno.departamento,this.alumno.telefono,this.alumno.fechaNacimiento,this.alumno.sexo]);
-          })*/
+              this.obtenerAlumnos();
+              this.limpiar();
+
+              this.msg = 'Alumno Guardado con exito.';
+              this.error = false;
+
+          }, ex=>{
+              console.log(ex);
+            });
+        },
+           modificarAlumno:function(alumno){
+            App.alumno = alumno;
+            appAlumnos.alumno.accion = 'modificar';
+            console.log("dato",alumno);
             
+           },
 
-
+        eliminarAlumno:function(idAlumno){
+            if(confirm("Estas seguro de eliminar este registro?")){
+                fetch(`private/Mod/alumnos/procesos.php?proceso=eliminarAlumno&alumno=${idAlumno}`).then(resp=>resp.json()).then(resp=>{
+                    this.buscarAlumno();
+                });
+                
+            //NOTA: Este error está acá ya que si se quita y se pone  un "}" más antes del }, la pagina queda en blanco 
+        }, 
+    
             if( this.accion=='nuevo' ){
                 this.alumno.idAlumno = generarIdUnicoDesdeFecha();   
             }
-            let db = indexDb.result,
-                transaccion = db.transaction("tblalumnos","readwrite"),
-                alumnos = transaccion.objectStore("tblalumnos"),
+            let db = AlumnosBD.result,
+                transaccion = db.transaction("alumnos","readwrite"),
+                alumnos = transaccion.objectStore("alumnos"),
                 query = alumnos.put(JSON.stringify(this.alumnos));
 
             query.onsuccess=event=>{
@@ -66,40 +94,25 @@ var appVue = new Vue({
                 this.error = true;
                 console.log( event );
             };
-        },
+    },
         
         obtenerAlumnos(){
-          this.alumnos = [];
-            for (let index = 0; index < localStorage.length; index++) {
-                let key = localStorage.key(index);
-                this.alumnos.push( JSON.parse(localStorage.getItem(key)) );
-            }
+        AlumnosBD.transaction(tran=>{
+                tran.executeSql('SELECT * FROM alumnos',[],(index,data)=>{
+                    this.alumnos = data.rows;
+                    id=data.rows.length;
+                });
+            }, err=>{
+                console.log( err );
+            });
         },
 
         mostrarAlumno(alum){
             this.accion='mostrar';
-            this.alumnos.idAlumno;
-            this.alumnos.codigo;
-            this.alumnos.nombre;
-            this.alumnos.dirección;
-            this.alumnos.municipio;
-            this.alumnos.departament;
-            this.alumnos.telefono;
-            this.alumnos.fechaNacimiento;
-            this.alumnos.sexo;
+            this.alumnos=alum;
         },
 
-        /*midbalumnos.transaction(tran=>{
-            tran.executeSql('select * from tblalumnos',[],(index,data)=>{
-                this.alumnos = data.rows;
-                id=data.rows.length;
-                 });
-            }, err=>{
-                console.log(err);
-            });
-    },
-        
-    },*/
+       
         limpiar(){
             this.accion='nuevo';
             this.alumnos.idAlumno='';
@@ -113,18 +126,27 @@ var appVue = new Vue({
             this.alumnos.sexo='';
         },
         eliminarAlumno(alum){
+           AlumnosBD.transaction(tran=>{
+                tran.executeSql('DELETE FROM alumnos WHERE idAlumno=0');
+                  
+                
+            }, err=>{
+                console.log( err );
+            });
+    
             if( confirm(`¿Esta seguro que desea eliminar el Alumno? :  ${alum.nombre}`) ){
                 localStorage.removeItem(alum.idAlumno)
                 this.obtenerAlumnos();
             }
-        }
-    },
+        },
     created(){
-        indexDb.onupgradeneeded=event=>{
-            let db=event.target.result,
-                tblalumnos = db.createObjectStore('tblalumnos',{autoIncrement:true});
-            tblalumnos.createIndex('idAlumno','idAlumno',{unique:true});
-        };
+        AlumnosBD.transaction(tran=>{
+            tran.executeSql('CREATE TABLE IF NOT EXISTS alumnos(idAlumno int PRIMARY KEY NOT NULL, codigo varchar(5), nombre varchar(65),direccion varchar(65), municipio varchar(15),departamento varchar(15),telefono varchar(9),fechanacimiento varchar(15),sexo varchar(10))');
+        }, err=>{
+            console.log( err );
+        });
         this.obtenerAlumnos();
     }
-});
+}
+
+    });

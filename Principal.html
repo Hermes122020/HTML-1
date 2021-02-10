@@ -22,57 +22,59 @@
                     <div class="row p-2">
                         <div class="col-sm">CODIGO:</div>
                         <div class="col-sm">
-                            <input v-model="alumnos.codigo"  required pattern="[A-ZÑña-z0-9, ]{5,65}" class="form-control form-control-sm">
+                            <input v-model="alumnos.codigo"  required pattern="[A-ZÑña-z0-9, ]{10}" class="form-control form-control-sm"  placeholder="Ejem: PPP012345">
 
                         </div>
                     </div>
                     <div class="row p-2">
                         <div class="col-sm">NOMBRE: </div>
                         <div class="col-sm">
-                            <input v-model="alumnos.nombre" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                            <input v-model="alumnos.nombre" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm"  placeholder="Ejem: Nombre Apellido">
                         </div>
                     </div>
                     <div class="row p-2">
                         <div class="col-sm">DIRRECIÓN: </div>
                         <div class="col-sm">
-                            <input v-model="alumnos.dirrección" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                            <input v-model="alumnos.dirrección" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm"  placeholder="Ejem: Casa">
                         </div>
                     </div>
                     <div class="row p-2">
                         <div class="col-sm">MUNICIPIO: </div>
                         <div class="col-sm">
-                            <input v-model="alumnos.Municipio" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                            <input v-model="alumnos.Municipio" required pattern="[A-ZÑña-z0-9, ]{5,15}" type="text" class="form-control form-control-sm"  placeholder="Ejem: Usulután">
                         </div>
                     </div>
                     <div class="row p-2">
                         <div class="col-sm">DEPARTAMENTO: </div>
                         <div class="col-sm">
-                            <input v-model="alumnos.Departamento" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                            <input v-model="alumnos.Departamento" required pattern="[A-ZÑña-z0-9, ]{5,15}" type="text" class="form-control form-control-sm" placeholder="Ejem: Usulután">
                         </div>
                     </div>
                     <div class="row p-2">
                         <div class="col-sm">TELEFONO: </div>
                         <div class="col-sm">
-                            <input v-model="alumnos.Departamento" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                            <input v-model="alumnos.Departamento" required pattern="[0-9]{4}-[0-9]{4}"  type="text" class="form-control form-control-sm"  placeholder="Ejem: 1234-5678">
                         </div>
 
                     <div class="row p-2">
                             <div div class="col-sm">FECHA DE NACIMIENTO:</div>
                             <div class="col-sm">
-                                <input v-model="alumnos.fechaNacimiento" required pattern="^[A-Z]{2}[0-9]{8}$" type="date" class="form-control form-control-sm">
+                                <input v-model="alumnos.fechaNacimiento" required pattern="{0000-00-00}"  type="date" class="form-control form-control-sm">
                         </div>
                     </div>
                     </div>
                     <div class="row p-2">
                         <div class="col-sm">SEXO: </div>
                         <div class="col-sm">
-                            <input v-model="alumnos.sexo" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                            <input v-model="alumnos.sexo" required pattern= "[F/M]{1}" type="text" type="text" class="form-control form-control-sm" placeholder="Definir">
                         </div>
                     </div>
                     <div class="row p-2">
                         <div class="col-sm text-center">
                             <input type="submit" value="Guardar" class="btn btn-dark">
                             <input type="reset" value="Limpiar" class="btn btn-warning">
+                            <input type="submit" value="Modificar" class="btn btn-dark">
+                             <input type="reset" value="Eliminar" class="btn-warning">
                         </div>
                     </div>
                     <div class="row p-2">
@@ -98,7 +100,7 @@
                                             
                                         </td>
                                     </tr>
-                                    <!--<button @click="obtenerAlumno(alum)" class="btn btn-info">Buscar</button>-->
+                                    
                                     <tr>
                                         <th>CODIGO</th>
                                         <th>NOMBRE</th>
@@ -121,8 +123,11 @@
                                         <td>{{alum.telefono }}</td>
                                         <td>{{alum.fechaNacimiento}}</td>
                                         <td>{{alum.sexo}}</td>
+                                        
+
                                         <td>
-                                            <button @click="eliminarAlumno(alum)" class="btn btn-danger">DEL</button>
+                                            <button @click="modificarAlumno(alum)" class="btn btn-info">MODI</button>
+                                            <button @click="eliminarAlumno(alum.idAlumno)" class="btn btn-danger">DEL</button>
                                         </td>
                                     </tr>
                                 </tbody>
