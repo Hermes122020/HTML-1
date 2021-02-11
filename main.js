@@ -113,6 +113,6 @@ var appVue = new Vue({
         });
         this.obtenerAlumnos();
     }
-}
+
 
     });
